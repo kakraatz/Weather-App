@@ -2,9 +2,10 @@
 # Weather App
 # Sources -
 
+import datetime
+import requests
 from tkinter import *
-from tkinter import ttk
-import datetime, json, requests, conditions, radar, forecast
+from tkintermapview import TkinterMapView
 
 # Home GUI
 root = Tk()
@@ -21,7 +22,7 @@ def get_datetime():
 location_input = StringVar()
 
 
-def forecast_win():
+def get_forecast():
     user_location = location_input.get()
 
     url = "http://api.openweathermap.org/data/2.5/forecast?zip=" \
@@ -29,6 +30,40 @@ def forecast_win():
 
     r = requests.get(url)
     data = r.json()
+
+    forecast_frame = Toplevel()
+    forecast_frame.geometry("1500x600")
+
+    date_box2 = Label(forecast_frame, text=get_datetime(), borderwidth=1, relief="solid")
+    date_box2.pack(side="left", anchor="nw", ipadx=5, ipady=5, padx=20, pady=10)
+
+    back_btn = Button(forecast_frame, text="Back", command=forecast_frame.destroy)
+    back_btn.pack(side="right", anchor="ne", ipadx=5, ipady=5, padx=20, pady=10)
+
+    zip_code = Label(forecast_frame, text="5-Day Forecast For Zip Code: " + user_location)
+    zip_code.pack(side="top", pady=10)
+
+    forecast_box = Frame(forecast_frame)
+    forecast_box.pack(fill=X, anchor="center", pady=40)
+    week_frame = Text(forecast_box)
+    week_frame.insert(INSERT, data)
+    week_frame.pack(fill=X, side="bottom", anchor="s", padx=20)
+
+    radar_button = Button(forecast_frame, text="Radar", command=get_radar)
+    radar_button.pack(side="left", anchor="sw", ipadx=5, ipady=5, padx=20, pady=30)
+
+    radar_button = Button(forecast_frame, text="Current Conditions")
+    radar_button.pack(side="right", anchor="se", ipadx=5, ipady=5, padx=20, pady=30)
+
+    location_search.delete(0, "end")
+
+
+def get_radar():
+    radar_frame = Toplevel()
+    radar_frame.geometry("900x900")
+    radar_box = TkinterMapView(radar_frame)
+    radar_box.pack(fill="both", expand=True)
+    radar_box.set_tile_server("https://mt0.google.com/vt/lyrs=m&hl=en")
 
 
 # Home features
@@ -54,17 +89,10 @@ location_head.pack(pady=10)
 
 location_search = Entry(search_frame, textvariable=location_input)
 location_search.pack(side="left", anchor="center", padx=5)
-search_button = Button(search_frame, text="Submit", command=forecast_win)
+search_button = Button(search_frame, text="Submit", command=get_forecast)
 search_button.pack(side="right", anchor="s")
 
 # Forecast GUI
-forecast_frame = Toplevel()
-forecast_box = Frame(forecast_frame)
-forecast_box.pack(fill="both")
-tfield = Text(forecast_box)
-tfield.insert(INSERT, data)
-tfield.pack(fill=X, padx=20)
-radar_button = Button(forecast_box, text="Radar", command=radar.radar_win)
-radar_button.pack(anchor="sw")
+
 
 root.mainloop()
