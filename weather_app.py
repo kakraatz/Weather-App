@@ -37,6 +37,7 @@ location_input = StringVar()
 
 def get_forecast():
     """Takes user input zip code and fetches weather data from openweathermap.org API.
+    Zip code entered must be valid in US, otherwise an error message will display.
     The data is returned in JSON format, and is parsed into daily weather data forecasts.
     The new Tkinter window displays the 7-day forecast, a button to close the window,
     a button to view the weather radar, and a button for all current conditions for the location."""
@@ -47,6 +48,17 @@ def get_forecast():
               + str(user_location) + ",us&appid=ab66a8bea15a972a3a415f37d5393bd2"
     zr = requests.get(url_zip)
     loc_data = zr.json()
+
+    if loc_data["cod"] == "400" or loc_data["cod"] == "404":
+        error_frame = Toplevel()
+        error_frame.geometry("200x100")
+        error_frame.resizable(0, 0)
+        error_msg = Label(error_frame, text="Please enter a valid location!")
+        error_msg.pack(anchor="center")
+        back_btn = Button(error_frame, text="Back", command=error_frame.destroy)
+        back_btn.pack(pady=10)
+        location_search.delete(0, "end")
+        return
 
     lat = loc_data["city"]["coord"]["lat"]
     long = loc_data["city"]["coord"]["lon"]
@@ -128,7 +140,7 @@ def get_forecast():
     day_frame7.insert(INSERT, day_7_fc)
     day_frame7.grid(row=0, column=6)
 
-    radar_button = Button(forecast_frame, text="Radar", command=lambda: get_radar(save_zip))
+    radar_button = Button(forecast_frame, text="Weather Radar", command=lambda: get_radar(save_zip))
     radar_button.pack(side="left", anchor="sw", ipadx=5, ipady=5, padx=20, pady=30)
 
     conditions_button = Button(forecast_frame, text="Current Conditions",
