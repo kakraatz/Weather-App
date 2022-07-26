@@ -18,11 +18,6 @@ import microservice.send
 import microservice.server
 
 
-# Start microservice server
-def server():
-    microservice.server.main()
-
-
 # Main GUI Initialization
 root = Tk()
 root.geometry("900x400")
