@@ -15,6 +15,12 @@ import json
 from tkinter import *
 from tkintermapview import TkinterMapView
 import microservice.send
+import microservice.server
+
+
+# Start microservice server
+def server():
+    microservice.server.main()
 
 
 # Main GUI Initialization
@@ -29,7 +35,7 @@ root.title("Sun Buddy | Weather App")
 # -------#########################-------#
 
 def get_date():
-    """Returns today's date in mmddyyyy format."""
+    """Returns today's date in mm-dd-yyyy format."""
     return str(datetime.datetime.now().month) + "-" + str(datetime.datetime.now().day) + "-" + str(
         datetime.datetime.now().year)
 
@@ -203,8 +209,8 @@ def get_current_conditions(zipcode):
     long = loc_data["city"]["coord"]["lon"]
     exclude = "minutely,hourly,daily,alerts"
     url = "http://api.openweathermap.org/data/3.0/onecall?lat=" \
-          + str(lat) + "&lon=" + str(long) + "&exclude=" + str(
-        exclude) + "&units=imperial&appid=ab66a8bea15a972a3a415f37d5393bd2"
+          + str(lat) + "&lon=" + str(long) + "&exclude=" + str(exclude) + \
+          "&units=imperial&appid=ab66a8bea15a972a3a415f37d5393bd2"
 
     r = requests.get(url)
     data = json.loads(r.text)
@@ -258,5 +264,7 @@ location_search = Entry(search_frame, textvariable=location_input)
 location_search.pack(side="left", anchor="center", padx=5)
 search_button = Button(search_frame, text="Submit", command=get_forecast)
 search_button.pack(side="right", anchor="s")
+location_search.bind('<Return>', lambda event=None: search_button.invoke())
 
-root.mainloop()
+if __name__ == '__main__':
+    root.mainloop()
