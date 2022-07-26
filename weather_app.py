@@ -14,6 +14,8 @@ import requests
 import json
 from tkinter import *
 from tkintermapview import TkinterMapView
+import microservice.send
+
 
 # Main GUI Initialization
 root = Tk()
@@ -83,23 +85,36 @@ def get_forecast():
     values = []
     for i in range(0, len(condition) - 1):
         values.append(
-            (condition[i], ("High of " + str(temp_high[i]) + " F"), "Low of " + str(temp_low[i]) + " F"))
+            (condition[i], ("high of " + str(temp_high[i]) + "\xb0F"), "low of " + str(temp_low[i]) + "\xb0F"))
 
     forecast = list(dict(zip(days, values)).items())
     day_1_fc = dict(enumerate(forecast[0]))
     day_1_fc = json.dumps(day_1_fc, indent=2)
+    day_1_fc = microservice.send.microservice(day_1_fc)
+
     day_2_fc = dict(enumerate(forecast[1]))
     day_2_fc = json.dumps(day_2_fc, indent=2)
+    day_2_fc = microservice.send.microservice(day_2_fc)
+
     day_3_fc = dict(enumerate(forecast[2]))
     day_3_fc = json.dumps(day_3_fc, indent=2)
+    day_3_fc = microservice.send.microservice(day_3_fc)
+
     day_4_fc = dict(enumerate(forecast[3]))
     day_4_fc = json.dumps(day_4_fc, indent=2)
+    day_4_fc = microservice.send.microservice(day_4_fc)
+
     day_5_fc = dict(enumerate(forecast[4]))
     day_5_fc = json.dumps(day_5_fc, indent=2)
+    day_5_fc = microservice.send.microservice(day_5_fc)
+
     day_6_fc = dict(enumerate(forecast[5]))
     day_6_fc = json.dumps(day_6_fc, indent=2)
+    day_6_fc = microservice.send.microservice(day_6_fc)
+
     day_7_fc = dict(enumerate(forecast[6]))
     day_7_fc = json.dumps(day_7_fc, indent=2)
+    day_7_fc = microservice.send.microservice(day_7_fc)
 
     forecast_frame = Toplevel()
     forecast_frame.geometry("1500x400")
